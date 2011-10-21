@@ -6,7 +6,16 @@
     </head>
     <body>
         <?php
-        $content;
+        echo Form::open();
+        echo $content;
+        ?>
+        <div style="margin-top: 30px;">
+            <?php
+            echo Form::submit('submit', __('Next Step'));
+            ?>
+        </div>
+        <?php
+        echo Form::close();
         ?>
     </body>
 </html>

@@ -81,6 +81,7 @@ if (isset($_SERVER['KOHANA_ENV']))
  */
 Kohana::init(array(
 	'base_url'   => preg_replace('/[^\/]+$/','',$_SERVER['SCRIPT_NAME']),
+        'index_file' => 'index.php',
 ));
 
 /**
