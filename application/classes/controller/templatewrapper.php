@@ -4,9 +4,9 @@ defined('SYSPATH') or die('No direct script access.');
 class Controller_TemplateWrapper extends Controller_Template {
     public $template = 'templates/default';
     
-    protected final $cssPath = 'application/views/templates/css/';
+    protected $cssPath = 'application/views/templates/css/';
     protected $titlePre = 'Statistican v2 :: ';
-    protected final $viewPath = 'pages/default/';   
+    protected $viewPath = 'pages/default/';   
         
     private $sObj = null;
 

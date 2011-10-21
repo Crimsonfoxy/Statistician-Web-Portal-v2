@@ -53,7 +53,7 @@ ini_set('unserialize_callback_func', 'spl_autoload_call');
 /**
  * Set the default language
  */
-I18n::lang('en-us');
+I18n::lang('en');
 
 /**
  * Set Kohana::$environment if a 'KOHANA_ENV' environment variable has been supplied.
@@ -113,8 +113,8 @@ Kohana::modules(array(
  */
 
 
-Route::set('default', '(<controller>(/<action>(/<id>)))')
-	->defaults(array(
-		'controller' => 'overview',
-		'action'     => 'index',
-	));
+Route::set('default', '(<controller>(/<action>(/<language>)))')
+        ->defaults(array(
+        'controller' => 'install',
+        'action' => 'start',
+));

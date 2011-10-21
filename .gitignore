@@ -1,6 +1,9 @@
 # Kohana
-application/cache/*
-application/logs/*
+application/config/database.php
+#application/cache/*
+#application/logs/*
+#installation/logs/*
+#installation/cach/*
 
 # Netbeans
 nbproject/

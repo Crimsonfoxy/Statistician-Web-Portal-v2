@@ -68,6 +68,15 @@ if ( ! is_dir($modules) AND is_dir(DOCROOT.$modules))
 if ( ! is_dir($system) AND is_dir(DOCROOT.$system))
 	$system = DOCROOT.$system;
 
+// Check Application Configuration
+if (file_exists(realpath($application).DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'database'.EXT) === FALSE)
+{
+    $application = 'installation';
+    
+    // Make the application relative to the docroot, for symlink'd index.php
+    if (!is_dir($application) and is_dir(DOCROOT . $application)) $application = DOCROOT . $application;
+}
+
 // Define the absolute paths for configured directories
 define('APPPATH', realpath($application).DIRECTORY_SEPARATOR);
 define('MODPATH', realpath($modules).DIRECTORY_SEPARATOR);
@@ -75,12 +84,6 @@ define('SYSPATH', realpath($system).DIRECTORY_SEPARATOR);
 
 // Clean up the configuration vars
 unset($application, $modules, $system);
-
-if (file_exists('install'.EXT))
-{
-	// Load the installation check
-	return include 'install'.EXT;
-}
 
 /**
  * Define the start time of the application, used for profiling.
