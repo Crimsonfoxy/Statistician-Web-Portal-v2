@@ -44,10 +44,10 @@ class Controller_Install extends Controller_Template {
         
         if($this->request->post()) {
             $config = array(
-                'type' => $this->request->post('driver'),
+                'type' => 'MySQL',
                 'connection' => array(
-                    'hostname' => $this->request->post('hostname') . $this->request->post('port'),
-                    'database' => $this->request->post('database_name'),                 
+                    'hostname' => $this->request->post('hostname') .':'. $this->request->post('port'),
+                    'database' => $this->request->post('database'),                 
                     'username' => $this->request->post('user'),
                     'password' => $this->request->post('password'),
                     'persistent' => FALSE
@@ -58,11 +58,33 @@ class Controller_Install extends Controller_Template {
                 'profiling' => FALSE
             );
             
-            
-            $this->session->set('database_config', $config);
+            try {
+                // Check if db is correct
+                Database::instance(NULL, $config)->connect();
+                
+                $this->session->set('database_config', $config);
+                $this->session->set('datbase_post', $_POST);
+                
+                $this->session->set('active_step', 2);
+                $this->request->redirect('install/step2');
+            }
+            catch(Exception $e) {
+                $this->template->errors = array(__('Cannot connect'), $e);
+            }
         }
         
-        $this->template->content = View::factory('install/step1');
+        $data['data'] = ($this->request->post()) ? $this->request->post() : $this->session->get('datbase_post');
+        $this->template->content = View::factory('install/step1', $data);
+    }
+    
+    /*
+     * Admin configuration
+     */
+    public function action_step2() {
+        if($this->session->get('active_step') < 2) $this->request->redirect ('install/step'.$this->session->get('active_step'));
+        
+        
+        $this->template->content = View::factory('install/step2');
     }
 }
 

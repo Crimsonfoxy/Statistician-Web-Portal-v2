@@ -69,7 +69,7 @@ if ( ! is_dir($system) AND is_dir(DOCROOT.$system))
 	$system = DOCROOT.$system;
 
 // Check Application Configuration
-if (true || file_exists(realpath($application).DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'database'.EXT) === FALSE)
+if (file_exists(realpath($application).DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'database'.EXT) === FALSE)
 {
     $application = 'installation';
     

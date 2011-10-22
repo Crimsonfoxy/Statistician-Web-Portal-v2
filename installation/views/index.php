@@ -5,6 +5,11 @@
         <title><?php echo $title; ?></title>
     </head>
     <body>
+        <div id="error">
+            <?php foreach($errors AS $error): ?>
+            <?php echo $error; ?><br />
+            <?php endforeach; ?>
+        </div>
         <?php
         echo Form::open();
         echo $content;
