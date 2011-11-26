@@ -2,17 +2,15 @@
 /*
  * Define some global constants for better path handling.
  */
-define('__ROOT__', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
-define('__INC__', __ROOT__ . 'inc' . DIRECTORY_SEPARATOR);
-define('__FLOUR__' , __INC__ . 'flourish' . DIRECTORY_SEPARATOR);
+define('__ROOT__', dirname(dirname(__FILE__)) . '/');
+define('__INC__', __ROOT__ . 'inc' . '/');
+define('__FLOUR__' , __INC__ . 'flourish' . '/');
 
-include(__INC__ . 'config.php');
+if(file_exists(__ROOT__ . 'installation')) include __ROOT__ . 'installation/install.php';
+else include(__INC__ . 'config.php');
 
-
-$content = fRequest::get('page', NULL, 'overview');
-$content .= '.php';
-
-$tpl = new fTemplating(__ROOT__ . 'views', 'index.php');
-$tpl->set('title', 'Statistican V2 :: powerd by FLOURISH');
-$tpl->set('content', $content);
-$tpl->place();
+/*
+ * Enables global error handling
+ */
+fCore::enableErrorHandling('html');
+fCore::enableExceptionHandling('html');
