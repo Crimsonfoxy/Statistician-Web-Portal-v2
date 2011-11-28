@@ -5,8 +5,11 @@
         <title><?php echo $this->get('title'); ?></title>
     </head>
     <body>
-        <?php
-        $this->place('step');
-        ?>
+        <fieldset name="installation">
+            <legend>Installation:</legend>        
+            <?php
+            $this->place('step');
+            ?>
+        </fieldset>
     </body>
 </html>

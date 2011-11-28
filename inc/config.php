@@ -1,16 +1,11 @@
 <?php
 /*
- * Gets the requested page and checks wether the page exists or not
+ * Enables global error handling
  */
-$content = fRequest::get('page', NULL, 'overview');
-$content .= '.php';
+fCore::enableErrorHandling('html');
+fCore::enableExceptionHandling('html');
 
-if(!file_exists(__ROOT__ . 'views/' .$content)) $content = 'error.php';
-
-$tpl = new fTemplating(__ROOT__ . 'views', 'index.php');
-$tpl->set('title', 'Statistican V2 :: powerd by FLOURISH');
-$tpl->set('content', $content);
-$tpl->place();
+fSession::open();
 
 /**
  * Automatically includes classes
