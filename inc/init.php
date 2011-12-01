@@ -4,7 +4,6 @@
  */
 define('__ROOT__', dirname(dirname(__FILE__)) . '/');
 define('__INC__', __ROOT__ . 'inc' . '/');
-define('__FLOUR__' , __INC__ . 'flourish' . '/');
 
 include_once __INC__ . 'functions.php';
 if(!file_exists(__ROOT__ . 'installation')) include_once __ROOT__ . 'installation/install.php';

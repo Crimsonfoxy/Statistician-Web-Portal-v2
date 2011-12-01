@@ -27,16 +27,13 @@ if(fRequest::isPost() && fRequest::get('db_submit')) {
             
         $vali->validate();
         
-        try {
-            $db = new fDatabase('mysql', fRequest::encode('database'), 
-                                    fRequest::encode('user'), 
-                                    fRequest::encode('pw'), 
-                                    fRequest::encode('host'));
-            $db->connect();
-            $db->close();
-        } catch (Exception $e) {
-            fMessaging::set('errors', $e->getMessage());
-        }
+        
+        $db = new fDatabase('mysql', fRequest::encode('database'), 
+                                fRequest::encode('user'), 
+                                fRequest::encode('pw'), 
+                                fRequest::encode('host'));
+        $db->connect();
+        $db->close();
         fSession::set('maxStep', 3);
         fSession::set('dbInfo', array(
                                 'database' => $tpl->get('database'),
@@ -45,8 +42,11 @@ if(fRequest::isPost() && fRequest::get('db_submit')) {
                                 'host' => $tpl->get('host'), 
                                 'prefix' => $tpl->get('prefix')
         ));
-        fURL::redirect('?step=three');
+        fURL::redirect('?step=three');            
+        
     } catch(fValidationException $e) {
+        fMessaging::create('errors', $e->getMessage());
+    } catch (Exception $e) {
         fMessaging::create('errors', $e->getMessage());
     }
 }

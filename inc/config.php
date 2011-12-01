@@ -7,6 +7,13 @@ fCore::enableExceptionHandling('html');
 
 fSession::open();
 
+/*
+ * Initializes the language modul
+ */
+$lang = new Language();
+$lang->load('errors');
+fText::registerComposeCallback('pre', array($lang, 'translate'));
+
 /**
  * Automatically includes classes
  * 
@@ -16,12 +23,11 @@ fSession::open();
  * @return void
  */
 function __autoload($class_name) {        
-    $file = __FLOUR__ . $class_name . '.php';
- 
-    if (file_exists($file)) {
-        include $file;
-        return;
-    }
+    $flourish_file = __INC__ . 'flourish/' . $class_name . '.php'; 
+    if (file_exists($flourish_file)) return require $flourish_file;
+    
+    $file = __INC__ . 'classes/' . $class_name . '.php';    
+    if(file_exists($file)) return require $file;
     
     throw new Exception('The class ' . $class_name . ' could not be loaded');
 }
