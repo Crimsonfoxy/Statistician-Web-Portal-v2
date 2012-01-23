@@ -2,5 +2,5 @@
 /*
  * Define version for update checks
  */
-define('statistican', '2.1r2');
-define('flourish', 'r1041');
+define('statistican', '2.1r3');
+define('flourish', 'r1042');
