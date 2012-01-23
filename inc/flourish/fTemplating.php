@@ -11,6 +11,7 @@
  * @link       http://flourishlib.com/fTemplating
  * 
  * @version    1.0.0b23
+ * @changes    1.0.0b24	 Added function to add some other filetypes [cs, 2012-01-23git]
  * @changes    1.0.0b23  Added a default `$name` for ::retrieve() to mirror ::attach() [wb, 2011-08-31]
  * @changes    1.0.0b22  Backwards Compatibility Break - removed the static method ::create(), added the static method ::attach() to fill its place [wb, 2011-08-31]
  * @changes    1.0.0b21  Fixed a bug in ::enableMinification() where the minification cache directory was sometimes not properly converted to a web path [wb, 2011-08-31]
@@ -150,6 +151,12 @@ class fTemplating
 	 */
 	private $short_tag_mode;
 	
+	/**
+	 * Allows the use of common or uncommon extensions
+	 * 
+	 * @var array
+	 */
+	private $extension_map;
 	
 	/**
 	 * Initializes this templating engine
@@ -185,6 +192,11 @@ class fTemplating
 		$this->buffered_id    = NULL;
 		$this->elements       = array();
 		$this->root           = $root;
+		$this->extension_map  = array(
+		    'inc'  => 'php',
+		    'php5' => 'php',
+		    'xml'  => 'rss'
+		);
 		
 		if ($main_element !== NULL) {
 			$this->set('__main__', $main_element);
@@ -221,6 +233,24 @@ class fTemplating
 	public function __get($method)
 	{
 		return array($this, $method);		
+	}
+	
+	
+	/**
+	 * Register one or more extensions for a regular extension
+	 * 
+	 * @param string $extension	The file type as the new one should be handled
+	 * @param mixed $new		The new extension
+	 */
+	 public function registerExtension($extension, $new) {
+	    if(!is_array($new)) {
+		$this->extension_map[$new] = $extension;
+	    }
+	    elseif(is_array($new)) {
+		foreach($new as $ext) {
+		    $this->extension_map[$ext] = $extension;
+		}
+	    }
 	}
 	
 	
@@ -1181,6 +1211,7 @@ class fTemplating
 							$value->short_tag_directory = $this->short_tag_directory;
 							$value->short_tag_mode      = $this->short_tag_mode;
 						}
+						$value->extension_map = $this->extension_map;
 						$value->place();
 						break;
 					
@@ -1468,17 +1499,10 @@ class fTemplating
 		
 		$path = (is_array($value)) ? $value['path'] : $value;
 		$path = preg_replace('#\?.*$#D', '', $path);
-		$extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+		$extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));		
 		
-		// Allow some common variations on file extensions
-		$extension_map = array(
-			'inc'  => 'php',
-			'php5' => 'php',
-			'xml'  => 'rss'
-		);
-		
-		if (isset($extension_map[$extension])) {
-			$extension = $extension_map[$extension];
+		if (isset($this->extension_map[$extension])) {
+			$extension = $this->extension_map[$extension];
 		}
 		
 		if (!in_array($extension, array('css', 'js', 'php', 'rss'))) {

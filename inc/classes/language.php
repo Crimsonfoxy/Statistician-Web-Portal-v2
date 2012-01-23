@@ -44,14 +44,14 @@ class Language {
     private function loadFile($file, $array=array()) {
         if(file_exists($file)) {
             include $file;
-            return array_merge($array, $translations);
+            return array_merge($array, $translations); // $translations form the given file
         }
         else throw new fNotFoundException('The language file ' . $file . ' could not be loaded');
     }
 
     /**
      * Loads an additional modul to the translations
-     * @param string modulname
+     * @param string $modul
      * @return void
      */
     public function load($modul) {
@@ -62,7 +62,7 @@ class Language {
     
     /**
      * Returns the translated string if it exsists
-     * If the string not exsists it returns the default string or the input string
+     * If the string does not exsist it returns the default string or the input string
      * @param string $string
      * @return string 
      */

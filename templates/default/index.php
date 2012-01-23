@@ -6,7 +6,7 @@
     </head>
     <body>        
         <?php
-        $this->place('content');
+        $this->place('tpl');
         ?>
     </body>
 </html>

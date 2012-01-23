@@ -1,8 +1,8 @@
 <?php
 if(fSession::get('maxStep') != 2) fURL::redirect ('?step=one');
 
-$tpl = new fTemplating($this->get('tplRoot'));
-
+$tpl = new fTemplating($this->get('tplRoot'), 'two.tpl');
+$this->set('tpl', $tpl);
 /*
  * Validates the database data
  */
@@ -50,5 +50,3 @@ if(fRequest::isPost() && fRequest::get('db_submit')) {
         fMessaging::create('errors', $e->getMessage());
     }
 }
-
-$tpl->inject('two.tpl', 'php');

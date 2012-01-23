@@ -1,5 +1,6 @@
 <?php
-$tpl = new fTemplating($this->get('tplRoot'));
+$tpl = new fTemplating($this->get('tplRoot'), 'one.tpl');
+$this->set('tpl', $tpl);
 
 /*
  * Gets the data from step one
@@ -10,5 +11,3 @@ if(fRequest::isPost() && fRequest::get('lang_submit')) {
     fURL::redirect('?step=two');
 }
 else fSession::set('maxStep', 1);
-
-$tpl->inject('one.tpl', 'php');

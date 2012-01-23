@@ -1,9 +1,10 @@
 <?php
 /*
  * Enables global error handling
- */
+ * deactiveated because of xDebug
 fCore::enableErrorHandling('html');
 fCore::enableExceptionHandling('html');
+ */
 
 fSession::open();
 

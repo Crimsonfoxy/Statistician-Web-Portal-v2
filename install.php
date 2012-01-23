@@ -4,14 +4,15 @@ include_once 'inc/init.php';
 /*
  * Gets the requested page and checks if the page exists or not
  */
-$step = './installation/';
-$step .= $s = fRequest::get('step', NULL, 'one');
+$step = fRequest::get('step', NULL, 'one');
+$s = $step;
 $step .= '.php';
 
-if(!file_exists(__ROOT__ . $step)) $step = './installation/error.php';
+if(!file_exists(__ROOT__ . 'installation/' . $step)) $step = 'error.php';
 
-$design = new fTemplating(__ROOT__ . 'installation/views', '../index.php');
+$design = new fTemplating(__ROOT__ . 'installation', './installation/index.php');
+$design->registerExtension('php', 'tpl');
 $design->set('title', 'Statistican V2 Installation - Step '.strtoupper($s));
-$design->set('step', $step);
 $design->set('tplRoot', __ROOT__ . 'installation/views');
+$design->inject($step);
 $design->place();

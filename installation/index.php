@@ -6,9 +6,9 @@
     </head>
     <body>
         <fieldset name="installation">
-            <legend>Installation:</legend>        
+            <legend>Installation:</legend>	    
             <?php
-            $this->place('step');
+            $this->place('tpl');
             ?>
         </fieldset>
     </body>
