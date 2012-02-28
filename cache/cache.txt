@@ -1,0 +1,2 @@
+Do not but any files in here!
+Files not registered by the cache system will be deleted.

@@ -6,5 +6,6 @@ $translations = array(
     'user' => 'User',
     'pw' => 'Password',
     'prefix' => 'Prefix',
-    'a' => 'cc'
+    'type' => 'Type',
+    'dbfile' => 'Database file'
 );

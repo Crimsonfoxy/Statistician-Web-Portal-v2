@@ -6,10 +6,12 @@
     </head>
     <body>
         <fieldset name="installation">
-            <legend>Installation:</legend>	    
+            <legend>Installation</legend>
+	    <form name="install" method="post" action="<?php echo fURL::getWithQueryString(); ?>">
             <?php
             $this->place('tpl');
             ?>
+	    </form>
         </fieldset>
     </body>
 </html>
