@@ -49,15 +49,15 @@ if(fRequest::isPost() && fRequest::get('converter_submit') && !fRequest::get('st
 	    $db->close();
 	    $tpl->set('state', 2);
 	} catch(fValidationException $e) {
-	    fMessaging::create('errors', $e->getMessage());
+	    fMessaging::create('validation', 'install/converter', $e->getMessage());
 	} catch(fConnectivityException $e) {
-	    fMessaging::create('errors', $e->getMessage());
+	    fMessaging::create('connectivity', 'install/converter', $e->getMessage());
 	} catch(fAuthorizationException $e) {
-	    fMessaging::create('errors', $e->getMessage());
+	    fMessaging::create('auth', 'install/converter', $e->getMessage());
 	} catch(fNotFoundException $e) {
-	    fMessaging::create('errors', $e->getMessage());
+	    fMessaging::create('notfound', 'install/converter', $e->getMessage());
 	} catch(fEnvironmentException $e) {
-	    fMessaging::create('errors', $e->getMessage());
+	    fMessaging::create('env', 'install/converter', $e->getMessage());
 	}
     }
     if($tpl->get('state') == 2) {

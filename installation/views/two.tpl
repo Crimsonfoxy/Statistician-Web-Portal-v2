@@ -2,7 +2,7 @@
 /*
  * Shows the error messages.
  */
-fMessaging::show('errors');
+fMessaging::show('*', 'install/two');
 ?>
 
 <fieldset>

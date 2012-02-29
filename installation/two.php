@@ -61,29 +61,32 @@ if(fRequest::isPost() && fRequest::get('db_submit')) {
 	}
         $db->connect();
         $db->close();
-	
-        fSession::set('maxStep', 3);
-        fSession::set('dbInfo', array(
-				'type' => $tpl->get('type'),
-                                'database' => $tpl->get('database'),	
-                                'user' => $tpl->get('user'),
-                                'pw' => $tpl->get('pw'),
-                                'host' => $tpl->get('host'),
-				'dbfile' => $tpl->get('dbfile'),
-                                'prefix' => $tpl->get('prefix')
-        ));
-        fURL::redirect('?step=three');            
-        
     } catch(fValidationException $e) {
-        fMessaging::create('errors', $e->getMessage());
+        fMessaging::create('validation', 'install/two', $e->getMessage());
     } catch (fConnectivityException $e) {
-        fMessaging::create('errors', $e->getMessage());
+        fMessaging::create('connectivity', 'install/two', $e->getMessage());
     } catch (fAuthorizationException $e) {
-	fMessaging::create('errors', $e->getMessage());
+	fMessaging::create('auth', 'install/two', $e->getMessage());
     } catch (fNotFoundException $e) {
-	fMessaging::create('errors', $e->getMessage());
+	fMessaging::create('notfound', 'install/two', $e->getMessage());
     } catch (fEnvironmentException $e) {
-	fMessaging::create('errors', $e->getMessage());
+	fMessaging::create('env', 'install/two', $e->getMessage());
     }
-	    
+    
+    try {	
+	// checking db.php
+	$db_file = new fFile(__INC__ . 'db.php');
+	
+	if (!fMessaging::check('validation', 'install/two')) {	
+	    if( $tpl->get('type') != 'sqlite') $host = $tpl->get('host');
+	    else $host = $tpl->get('dbfile');
+
+	    $contents = "<?php \n/*\n* Do not modify this unless you know what you are doing!\n*/\n\ndefine('DB_HOST', '". $host ."');\ndefine('DB_USER', '". $tpl->get('user') ."');\ndefine('DB_PW', '". $tpl->get('pw') ."');\ndefine('DB_DATABASE', '". $tpl->get('database') ."');\ndefine('DB_PREFIX', '". $tpl->get('prefix') ."');\ndefine('DB_TYPE', '". $tpl->get('type') ."');";
+	    $db_file->write($contents);
+	}
+	fSession::set('maxStep', 3);
+	fURL::redirect('?step=three');  
+    } catch(fValidationException $e) {
+        fMessaging::create('db_file', 'install/two', $e->getMessage());
+    }	    
 }

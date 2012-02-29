@@ -10,9 +10,9 @@ function writeDB($file) {
 	// skip if line is a comment or empty
 	if(substr($line, 0, 2) == '--' || $line == '') continue;
 	// replace prefix
-	$line = str_replace('$prefix_', fSession::get('dbInfo[prefix]'), $line);
+	$line = str_replace('$prefix_', DB_PREFIX, $line);
 	// replace dbname
-	$line = str_replace('$dbname', fSession::get('dbInfo[database]'), $line);
+	$line = str_replace('$dbname', DB_DATABASE, $line);
 	$query .= $line;
 
 	// if it is the end of a single query -> execute
@@ -32,21 +32,6 @@ if(!fMessaging::check('errors') && fRequest::isPost() && fRequest::get('convert_
     if(fRequest::get('old_data', 'boolean')) fURL::redirect('?step=converter');
     else fURL::redirect('?step=five');
 } else {
-    // checking db.php
-    try {
-	$db_file = new fFile(__INC__ . 'db.php');
-	if($db_file->isWritable()) $tpl->set('db_file', fText::compose('%s is writable', $db_file->getPath(true)));
-	else $tpl->set('db_file', fText::compose('%s is not writable. Check the permissions'));
-
-	if(fSession::get('dbInfo[type]') != 'sqlite') $host = fSession::get('dbInfo[host]');
-	else $host = fSession::get('dbInfo[dbfile]');
-
-	$contents = "<?php \n/*\n* Do not modify this unless you know what you are doing!\n*/\n\ndefine('DB_HOST', '". $host ."');\ndefine('DB_USER', '". fSession::get('dbInfo[user]') ."');\ndefine('DB_PW', '". fSession::get('dbInfo[pw]') ."');\ndefine('DB_DATABASE', '". fSession::get('dbInfo[database]') ."');\ndefine('DB_PREFIX', '". fSession::get('dbInfo[prefix]') ."');\ndefine('DB_TYPE', '". fSession::get('dbInfo[type]') ."');";
-	$db_file->write($contents);
-    } catch (fValidationException $e) {
-	fMessaging::create('errors', $e->getMessage());
-    }
-    
     // checking cache dir
     try {
 	$cache_dir = new fDirectory(__ROOT__ . 'cache');
@@ -74,14 +59,14 @@ if(!fMessaging::check('errors') && fRequest::isPost() && fRequest::get('convert_
 	
 	$tpl->set('database', 'database written');
     } catch (fConnectivityException $e) {
-	fMessaging::create('errors', $e->getMessage());
+	fMessaging::create('connectivity', 'install/four', $e->getMessage());
     } catch (fAuthorizationException $e) {
-	fMessaging::create('errors', $e->getMessage());
+	fMessaging::create('auth', 'install/four', $e->getMessage());
     } catch (fNotFoundException $e) {
-	fMessaging::create('errors', $e->getMessage());
+	fMessaging::create('notfound', 'install/four', $e->getMessage());
     } catch (fValidationException $e) {
-	fMessaging::create('errors', $e->getMessage());
+	fMessaging::create('validation', 'install/four', $e->getMessage());
     } catch (fSQLException $e) {
-	fMessaging::create('errors', $e->getMessage());
+	fMessaging::create('sql', 'install/four', $e->getMessage());
     }
 }

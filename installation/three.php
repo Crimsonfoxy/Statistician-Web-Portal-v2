@@ -31,6 +31,6 @@ if(fRequest::isPost() && fRequest::get('general_submit')) {
 	fURL::redirect('?step=four');	
     }
     catch (fValidationException $e) {
-	fMessaging::create('errors', $e->getMessage());
+	fMessaging::create('validation', 'install/three', $e->getMessage());
     }   
 }
