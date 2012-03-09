@@ -2,6 +2,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<?php foreach($this->get('header_additions') as $row) echo $row . "\n"; ?>
         <title><?php echo $this->get('title'); ?></title>
     </head>
     <body>

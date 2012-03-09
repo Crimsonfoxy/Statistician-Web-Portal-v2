@@ -96,7 +96,6 @@ if(fRequest::isPost() && fRequest::get('converter_submit') && !fRequest::get('st
  * starting with the real converting....
  */
 $valid_status = array(
-    false,
     'players',
     'blocks_destroyed',
     'blocks_placed',
@@ -106,7 +105,7 @@ $valid_status = array(
     'pve'
 );
 if((fRequest::isPost() && fRequest::get('start')) 
-	|| (fRequest::isGet() && fRequest::getValid('status', $valid_status))) {
+	|| (fRequest::isGet() && in_array(fRequest::get('status'), $valid_status))) {
     $db = new fDatabase(
 	    'mysql', 
 	    fSession::get('convertDB[database]'), 
@@ -116,7 +115,9 @@ if((fRequest::isPost() && fRequest::get('start'))
 	    );
     $db2 = fORMDatabase::retrieve();
     
-    if(fRequest::get('status') == 'players') {
+    if((fRequest::isPost() && fRequest::get('start')))  fSession::set('convert', fRequest::get('convert'));
+    
+    if((fRequest::isPost() && fRequest::get('start')) || fRequest::get('status') == 'players') {
 	$players = $db->query('SELECT 
 	    DISTINCT player_name, 
 	    last_login, 
@@ -127,7 +128,8 @@ if((fRequest::isPost() && fRequest::get('start'))
 	    distance_traveled_on_pig AS pig 
 	    FROM players
 	    WHERE last_logout IS NOT NULL 
-	    AND last_login IS NOT NULL');
+	    AND last_login IS NOT NULL
+	    ');
 	
 	$player_stmt = $db2->translatedPrepare('INSERT INTO "prefix_players" ("name") VALUES (%s)');
 	$login_stmt = $db2->translatedPrepare('INSERT INTO "prefix_players_log" ("playerID", "logged_in", "logged_out") VALUES (%i, %i, %i)');
@@ -144,6 +146,7 @@ if((fRequest::isPost() && fRequest::get('start'))
 	// catch time for reload...
 	$start = new fTime('+' .(ini_get('max_execution_time') - 5). ' seconds');
 	$i = (fRequest::get('last') ? fRequest::get('last') : 1);
+	$stop = true;
 	$players->seek($i - 1);
 	while($players->valid()) {
 	    $row = $players->fetchRow();
@@ -153,10 +156,81 @@ if((fRequest::isPost() && fRequest::get('start'))
 	    $db2->execute($login_stmt, $last, $row['last_login'], $row['last_logout']);
 
 	    $now = new fTime();
-	    if($now->gte($start)) fURL::redirect('?step=converter&status=players&last='.$i);
+	    if($now->gte($start)) {		
+		$stop = false;
+		break;
+	    }
 	    $i++;
-	}	
-	//fURL::redirect('?step=converter&status=blocks');
+	}
+	$db->close();
+	$db2->close();
+	if($stop) {
+	    $this->add('header_additions', '<meta http-equiv="REFRESH" content="1;url=?step=converter&status=blocks_destroyed">');
+	    $tpl->set('current_state', 'Moving over to the next step');
+	}
+	else {
+	    $this->add('header_additions', '<meta http-equiv="REFRESH" content="1;url=?step=converter&status=players&last=' . $i . '">');
+	    $tpl->set('current_state', 'Converting players. Current player: ' . $i);
+	}
+    }
+    else if(fRequest::get('status') == 'blocks_destroyed' && fSession::get('convert[blocks_destroyed]')) {
+	$blocks = $db->query('
+	    SELECT p.player_name, b.block_id, b.num_destroyed
+	    FROM blocks b, players p
+	    WHERE b.uuid = p.uuid
+	    ');
+	$block_stmt = $db2->translatedPrepare('
+	    INSERT INTO "prefix_blocks_destroyed" 
+	    ("blockID", "playerID") VALUES (%i, %i)
+	    ');
+	$playerID_stmt = $db2->translatedPrepare('
+	    SELECT playerID 
+	    FROM "prefix_players" 
+	    WHERE name = %s
+	    ');
+	
+	// catch time for reload...
+	$start = new fTime('+' .(ini_get('max_execution_time') - 7). ' seconds');
+	$i = (fRequest::get('last') ? fRequest::get('last') : 1);
+	$num = 1;
+	$stop = true;
+	$blocks->seek($i - 1);
+	foreach($blocks as $block) {
+	    for($k = 1; $k <= (fRequest::get('num') ? fRequest::get('num') : $block['num_destroyed']); $k++) {
+		try {
+		    $playerID = $db2->query($playerID_stmt, $block['player_name'])->fetchScalar();
+		} catch (fNoRowsException $e) {
+		    continue 2;
+		}
+		$db2->query($block_stmt, $block['block_id'], $playerID);
+		
+		$now = new fTime();
+		if($now->gte($start)) {
+		    $stop = false;
+		    $num = $k;
+		    break 2;		    		
+		}
+	    }
+	    $i++;	    
+	}
+	$db->close();
+	$db2->close();
+	
+	if($stop) {
+	    $this->add('header_additions', '<meta http-equiv="REFRESH" content="1;url=?step=converter&status=blocks_placed">');	
+	    $tpl->set('current_state', 'Moving over to the next step');
+	}
+	else {
+	    $this->add('header_additions', 
+		    '<meta http-equiv="REFRESH" content="1;url=?step=converter&status=blocks_destroyed&last=' . $i . '&num=' . $num . '">');
+	    $tpl->set('current_state', 'Converting blocks. Current block: ' . $i);
+	}
+    }
+    else if(fRequest::get('status') == 'blocks_placed' && fSession::get('convert[blocks_placed]')) {
+	
+    }
+    else {
+	// TODO: go to next status if the redirected is not ticked....
     }    
     $tpl->set('state', 3);
 }

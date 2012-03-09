@@ -29,22 +29,22 @@ fMessaging::show('*', 'install/converter');
 	<tr>
 	    <td>Blocks placed:</td>
 	    <td><?php echo $this->get('blocks_placed'); ?></td>
-	    <td><input type="checkbox" name="convert[blocks][placed]" id="convert_placed_blocks" checked="checked"></td>
+	    <td><input type="checkbox" name="convert[blocks_placed]" id="convert_placed_blocks" checked="checked"></td>
 	</tr>
 	<tr>
 	    <td>Blocks destroyed:</td>
 	    <td><?php echo $this->get('blocks_destroyed'); ?></td>
-	    <td><input type="checkbox" name="convert[blocks][destroyed]" id="convert_des_blocks" checked="checked"></td>
+	    <td><input type="checkbox" name="convert[blocks_destroyed]" id="convert_des_blocks" checked="checked"></td>
 	</tr>
 	<tr>
 	    <td>Items dropped:</td>
 	    <td><?php echo $this->get('items_dropped'); ?></td>
-	    <td><input type="checkbox" name="convert[items][dropped]" id="convert_dropped_items" checked="checked"></td>
+	    <td><input type="checkbox" name="convert[items_dropped]" id="convert_dropped_items" checked="checked"></td>
 	</tr>
 	<tr>
 	    <td>Items picked up:</td>
 	    <td><?php echo $this->get('items_picked'); ?></td>
-	    <td><input type="checkbox" name="convert[items][picked]" id="convert_picked_items" checked="checked"></td>
+	    <td><input type="checkbox" name="convert[items_picked]" id="convert_picked_items" checked="checked"></td>
 	</tr>
 	<tr>
 	    <td>PVP Kills:</td>
@@ -60,7 +60,10 @@ fMessaging::show('*', 'install/converter');
     <input type="hidden" name="start" value="true">
     <?php endif; ?>
     <?php if($this->get('state') == 3): ?>
-    Converted
+    <p>Converting...</p>
+    <p>Please be patient.</p>
+    <p>Current state: <?php echo $this->get('current_state') ?></p>
+    
     <?php endif; ?>
 </fieldset>
 <input type="submit" name="converter_submit" value="<?php echo fText::compose('Next'); ?>">
