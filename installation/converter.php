@@ -67,17 +67,22 @@ if(fRequest::isPost() && fRequest::get('converter_submit') && !fRequest::get('st
 	    WHERE last_logout IS NOT NULL 
 	    AND last_login IS NOT NULL
 	    ');
-	$tpl->set('players', $players->fetchScalar());
-
+	$p = new fNumber($players->fetchScalar());
+	$tpl->set('players', $p->format());
+	// TODO: let the user choose which blocks should be converted... 
 	$blocks = $db->query('SELECT SUM(num_placed) AS placed, SUM(num_destroyed) AS destroyed FROM blocks');
 	$block = $blocks->fetchRow();
-	$tpl->set('blocks_placed', $block['placed']);
-	$tpl->set('blocks_destroyed', $block['destroyed']);
-
+	$block['placed'] = new fNumber($block['placed']);
+	$block['destroyed'] = new fNumber($block['destroyed']);
+	$tpl->set('blocks_placed', $block['placed']->format());
+	$tpl->set('blocks_destroyed', $block['destroyed']->format());
+	// TODO: let the user choose which items should be converted...
 	$items = $db->query('SELECT SUM(num_pickedup) AS picked, SUM(num_dropped) AS dropped FROM pickup_drop');
 	$item = $items->fetchRow();
-	$tpl->set('items_picked', $item['picked']);
-	$tpl->set('items_dropped', $item['dropped']);
+	$item['picked'] = new fNumber($item['picked']);
+	$item['dropped'] = new fNumber($item['dropped']);
+	$tpl->set('items_picked', $item['picked']->format());
+	$tpl->set('items_dropped', $item['dropped']->format());
 
 	$pvp = $db->query('SELECT COUNT(id) FROM kills 
 	    WHERE killed = 999 
@@ -88,8 +93,10 @@ if(fRequest::isPost() && fRequest::get('converter_submit') && !fRequest::get('st
 	    AND killed != 999 
 	    AND killed_by != 18 
 	    AND killed_by != 0');
-	$tpl->set('pve', $pve->fetchScalar());
-	$tpl->set('pvp', $pvp->fetchScalar());	
+	$pve = new fNumber($pve->fetchScalar());
+	$pvp = new fNumber($pvp->fetchScalar());
+	$tpl->set('pve', $pve->format());
+	$tpl->set('pvp', $pvp->format());	
     }    
 }
 /*
@@ -146,6 +153,7 @@ if((fRequest::isPost() && fRequest::get('start'))
 	// catch time for reload...
 	$start = new fTime('+' .(ini_get('max_execution_time') - 5). ' seconds');
 	$i = (fRequest::get('last') ? fRequest::get('last') : 1);
+	$total = new fNumber($players->countReturnedRows());
 	$stop = true;
 	$players->seek($i - 1);
 	while($players->valid()) {
@@ -170,7 +178,7 @@ if((fRequest::isPost() && fRequest::get('start'))
 	}
 	else {
 	    $this->add('header_additions', '<meta http-equiv="REFRESH" content="1;url=?step=converter&status=players&last=' . $i . '">');
-	    $tpl->set('current_state', 'Converting players. Current player: ' . $i);
+	    $tpl->set('current_state', 'Converting players. Current player: ' . $i . ' of '. $total->format());
 	}
     }
     else if(fRequest::get('status') == 'blocks_destroyed' && fSession::get('convert[blocks_destroyed]')) {
@@ -179,6 +187,7 @@ if((fRequest::isPost() && fRequest::get('start'))
 	    FROM blocks b, players p
 	    WHERE b.uuid = p.uuid
 	    ');
+	$total = new fNumber($db->query('SELECT SUM(num_destroyed) FROM blocks')->fetchScalar());
 	$block_stmt = $db2->translatedPrepare('
 	    INSERT INTO "prefix_blocks_destroyed" 
 	    ("blockID", "playerID") VALUES (%i, %i)
@@ -193,6 +202,7 @@ if((fRequest::isPost() && fRequest::get('start'))
 	$start = new fTime('+' .(ini_get('max_execution_time') - 7). ' seconds');
 	$i = (fRequest::get('last') ? fRequest::get('last') : 1);
 	$num = 1;
+	$sum = (fRequest::get('sum') ? fRequest::get('sum') : 1);
 	$stop = true;
 	$blocks->seek($i - 1);
 	foreach($blocks as $block) {
@@ -203,6 +213,7 @@ if((fRequest::isPost() && fRequest::get('start'))
 		    continue 2;
 		}
 		$db2->query($block_stmt, $block['block_id'], $playerID);
+		$sum++;
 		
 		$now = new fTime();
 		if($now->gte($start)) {
@@ -211,6 +222,7 @@ if((fRequest::isPost() && fRequest::get('start'))
 		    break 2;		    		
 		}
 	    }
+	    $sum++;
 	    $i++;	    
 	}
 	$db->close();
@@ -222,11 +234,68 @@ if((fRequest::isPost() && fRequest::get('start'))
 	}
 	else {
 	    $this->add('header_additions', 
-		    '<meta http-equiv="REFRESH" content="1;url=?step=converter&status=blocks_destroyed&last=' . $i . '&num=' . $num . '">');
-	    $tpl->set('current_state', 'Converting blocks. Current block: ' . $i);
+		    '<meta http-equiv="REFRESH" content="1;url=?step=converter&status=blocks_destroyed&last=' . $i . '&num=' . $num . '&sum=' . $sum . '">');
+	    $tpl->set('current_state', 'Converting blocks destroyed. Current block: ' . $sum . ' of ' . $total->format());
 	}
     }
     else if(fRequest::get('status') == 'blocks_placed' && fSession::get('convert[blocks_placed]')) {
+	$blocks = $db->query('
+	    SELECT p.player_name, b.block_id, b.num_placed
+	    FROM blocks b, players p
+	    WHERE b.uuid = p.uuid
+	    ');
+	$total = new fNumber($db->query('SELECT SUM(num_placed) FROM blocks')->fetchScalar());
+	$block_stmt = $db2->translatedPrepare('
+	    INSERT INTO "prefix_blocks_placed" 
+	    ("blockID", "playerID") VALUES (%i, %i)
+	    ');
+	$playerID_stmt = $db2->translatedPrepare('
+	    SELECT playerID 
+	    FROM "prefix_players" 
+	    WHERE name = %s
+	    ');
+	
+	// catch time for reload...
+	$start = new fTime('+' .(ini_get('max_execution_time') - 7). ' seconds');
+	$i = (fRequest::get('last') ? fRequest::get('last') : 1);
+	$num = 1;
+	$sum = (fRequest::get('sum') ? fRequest::get('sum') : 1);
+	$stop = true;
+	$blocks->seek($i - 1);
+	foreach($blocks as $block) {
+	    for($k = 1; $k <= (fRequest::get('num') ? fRequest::get('num') : $block['num_placed']); $k++) {
+		try {
+		    $playerID = $db2->query($playerID_stmt, $block['player_name'])->fetchScalar();
+		} catch (fNoRowsException $e) {
+		    continue 2;
+		}
+		$db2->query($block_stmt, $block['block_id'], $playerID);
+		$sum++;
+		
+		$now = new fTime();
+		if($now->gte($start)) {
+		    $stop = false;
+		    $num = $k;
+		    break 2;		    		
+		}
+	    }
+	    $sum++;
+	    $i++;	    
+	}
+	$db->close();
+	$db2->close();
+	
+	if($stop) {
+	    $this->add('header_additions', '<meta http-equiv="REFRESH" content="1;url=?step=converter&status=items_dropped">');	
+	    $tpl->set('current_state', 'Moving over to the next step');
+	}
+	else {
+	    $this->add('header_additions', 
+		    '<meta http-equiv="REFRESH" content="1;url=?step=converter&status=blocks_placed&last=' . $i . '&num=' . $num . '&sum=' . $sum . '">');
+	    $tpl->set('current_state', 'Converting blocks placed. Current block: ' . $sum . ' of ' . $total->format());
+	}	
+    }
+    else if(fRequest::get('status') == 'items_dropped' && fSession::get('convert[items_dropped]')) {
 	
     }
     else {

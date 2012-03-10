@@ -18,7 +18,7 @@ fMessaging::show('*', 'install/converter');
     <?php endif; ?>
     
     <?php if($this->get('state') == 2): ?>
-    <p>Calculates how many database entries will be run...</p>
+    <p>This could last a long time! Go and take or coffee or finish your dinner ;)</p>
     <p>Choose which entries do you want to convert:</p>
     <table>
 	<tr>
@@ -60,10 +60,10 @@ fMessaging::show('*', 'install/converter');
     <input type="hidden" name="start" value="true">
     <?php endif; ?>
     <?php if($this->get('state') == 3): ?>
-    <p>Converting...</p>
-    <p>Please be patient.</p>
-    <p>Current state: <?php echo $this->get('current_state') ?></p>
-    
+    <p>Converting... Please be patient.</p>
+    <p>Current state: <?php echo $this->get('current_state') ?></p>    
     <?php endif; ?>
 </fieldset>
+<?php if($this->get('state') != 3): ?>
 <input type="submit" name="converter_submit" value="<?php echo fText::compose('Next'); ?>">
+<?php endif; ?>
