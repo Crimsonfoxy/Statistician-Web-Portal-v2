@@ -1,10 +1,12 @@
 <?php
 /*
- * Enables global error handling
- * deactiveated because of xDebug
-fCore::enableErrorHandling('html');
-fCore::enableExceptionHandling('html');
+ * Handles the conflict between xdbeug
+ * and the flourish debugsystem
  */
+if(!extension_loaded('xdebug')) {
+    fCore::enableErrorHandling('html');
+    fCore::enableExceptionHandling('html');    
+}
 
 fSession::open();
 
@@ -41,12 +43,13 @@ if(defined('DB_TYPE')) {
  * @param  string $class_name  Name of the class to load
  * @return void
  */
-function __autoload($class_name) {        
+function __autoload($class_name) {
+    $class_name = strtolower($class_name);
     $flourish_file = __INC__ . 'flourish/' . $class_name . '.php'; 
     if (file_exists($flourish_file)) return require $flourish_file;
     
     $file = __INC__ . 'classes/' . $class_name . '.php';    
     if(file_exists($file)) return require $file;
     
-    throw new Exception('The class ' . $class_name . ' could not be loaded');
+    throw new fEnvironmentException('The class ' . $class_name . ' could not be loaded');
 }

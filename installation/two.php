@@ -84,9 +84,11 @@ if(fRequest::isPost() && fRequest::get('db_submit')) {
 	    $contents = "<?php \n/*\n* Do not modify this unless you know what you are doing!\n*/\n\ndefine('DB_HOST', '". $host ."');\ndefine('DB_USER', '". $tpl->get('user') ."');\ndefine('DB_PW', '". $tpl->get('pw') ."');\ndefine('DB_DATABASE', '". $tpl->get('database') ."');\ndefine('DB_PREFIX', '". $tpl->get('prefix') ."');\ndefine('DB_TYPE', '". $tpl->get('type') ."');";
 	    $db_file->write($contents);
 	}
-	fSession::set('maxStep', 3);
-	fURL::redirect('?step=three');  
     } catch(fValidationException $e) {
         fMessaging::create('db_file', 'install/two', $e->getMessage());
     }	    
+    if(!fMessaging::check('*', 'install/two')) {
+	fSession::set('maxStep', 3);
+	fURL::redirect('?step=three');  
+    }
 }
