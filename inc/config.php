@@ -43,8 +43,7 @@ if(defined('DB_TYPE')) {
  * @param  string $class_name  Name of the class to load
  * @return void
  */
-function __autoload($class_name) {
-    $class_name = strtolower($class_name);
+function __autoload($class_name) {    
     $flourish_file = __INC__ . 'flourish/' . $class_name . '.php'; 
     if (file_exists($flourish_file)) return require $flourish_file;
     
