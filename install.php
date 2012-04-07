@@ -8,11 +8,12 @@ $step = fRequest::get('step', NULL, 'one');
 $s = $step;
 $step .= '.php';
 
-if(!file_exists(__ROOT__ . 'installation/' . $step)) $step = 'error.php';
+if(!file_exists(__ROOT__ . 'installation/' . $step))
+    $step = 'error.php';
 
 $design = new fTemplating(__ROOT__ . 'installation', './installation/index.php');
 $design->registerExtension('php', 'tpl');
-$design->set('title', 'Statistican V2 Installation - Step '.strtoupper($s));
+$design->set('title', 'Statistican V2 Installation - Step ' . strtoupper($s));
 $design->set('tplRoot', __ROOT__ . 'installation/views');
 $design->add('header_additions', '');
 $design->inject($step);

@@ -1,11 +1,11 @@
 <?php
 $translations = array(
     'submit' => 'Submit',
-    'db' => 'Database',
+    'db'     => 'Database',
     'server' => 'Server',
-    'user' => 'User',
-    'pw' => 'Password',
+    'user'   => 'User',
+    'pw'     => 'Password',
     'prefix' => 'Prefix',
-    'type' => 'Type',
+    'type'   => 'Type',
     'dbfile' => 'Database file'
 );

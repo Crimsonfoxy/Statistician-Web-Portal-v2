@@ -7,6 +7,9 @@ nbdist/
 nbactions.xml
 nb-configuration.xml
 
+# PhpStorm
+.idea/
+
 # Statistician V2
 cache/
 inc/db.php

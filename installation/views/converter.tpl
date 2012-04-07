@@ -14,54 +14,58 @@ fMessaging::show('*', 'install/converter');
     <label for="pw"><?php echo fText::compose('pw'); ?>:</label>
     <input type="text" name="pw" id="pw" placeholder="password" value="<?php echo $this->get('pw') ?>"><br>
     <label for="database"><?php echo fText::compose('db'); ?>:</label>
-    <input type="text" name="database" id="database" placeholder="statistican" value="<?php echo $this->get('database') ?>"><br> 
+    <input type="text" name="database" id="database" placeholder="statistican"
+           value="<?php echo $this->get('database') ?>"><br>
     <?php endif; ?>
-    
+
     <?php if($this->get('state') == 2): ?>
     <p>This could last a long time! Go and take or coffee or finish your dinner ;)</p>
+
     <p>Choose which entries do you want to convert:</p>
     <table>
-	<tr>
-	    <td>Players:</td>
-	    <td><?php echo $this->get('players'); ?></td>
-	    <td><input type="checkbox" name="convert[players]" id="convert_players" disabled="disabled" checked="checked"></td>
-	</tr>
-	<tr>
-	    <td>Blocks placed:</td>
-	    <td><?php echo $this->get('blocks_placed'); ?></td>
-	    <td><input type="checkbox" name="convert[blocks_placed]" id="convert_placed_blocks" checked="checked"></td>
-	</tr>
-	<tr>
-	    <td>Blocks destroyed:</td>
-	    <td><?php echo $this->get('blocks_destroyed'); ?></td>
-	    <td><input type="checkbox" name="convert[blocks_destroyed]" id="convert_des_blocks" checked="checked"></td>
-	</tr>
-	<tr>
-	    <td>Items dropped:</td>
-	    <td><?php echo $this->get('items_dropped'); ?></td>
-	    <td><input type="checkbox" name="convert[items_dropped]" id="convert_dropped_items" checked="checked"></td>
-	</tr>
-	<tr>
-	    <td>Items picked up:</td>
-	    <td><?php echo $this->get('items_picked'); ?></td>
-	    <td><input type="checkbox" name="convert[items_picked]" id="convert_picked_items" checked="checked"></td>
-	</tr>
-	<tr>
-	    <td>PVP Kills:</td>
-	    <td><?php echo $this->get('pvp'); ?></td>
-	    <td><input type="checkbox" name="convert[pvp]" id="convert_pvp" checked="checked"></td>
-	</tr>
-	<tr>
-	    <td>PVE Kills:</td>
-	    <td><?php echo $this->get('pve'); ?></td>
-	    <td><input type="checkbox" name="convert[pve]" id="convert_pve" checked="checked"></td>
-	</tr>	
+        <tr>
+            <td>Players:</td>
+            <td><?php echo $this->get('players'); ?></td>
+            <td><input type="checkbox" name="convert[players]" id="convert_players" disabled="disabled"
+                       checked="checked"></td>
+        </tr>
+        <tr>
+            <td>Blocks placed:</td>
+            <td><?php echo $this->get('blocks_placed'); ?></td>
+            <td><input type="checkbox" name="convert[blocks_placed]" id="convert_placed_blocks" checked="checked"></td>
+        </tr>
+        <tr>
+            <td>Blocks destroyed:</td>
+            <td><?php echo $this->get('blocks_destroyed'); ?></td>
+            <td><input type="checkbox" name="convert[blocks_destroyed]" id="convert_des_blocks" checked="checked"></td>
+        </tr>
+        <tr>
+            <td>Items dropped:</td>
+            <td><?php echo $this->get('items_dropped'); ?></td>
+            <td><input type="checkbox" name="convert[items_dropped]" id="convert_dropped_items" checked="checked"></td>
+        </tr>
+        <tr>
+            <td>Items picked up:</td>
+            <td><?php echo $this->get('items_picked'); ?></td>
+            <td><input type="checkbox" name="convert[items_picked]" id="convert_picked_items" checked="checked"></td>
+        </tr>
+        <tr>
+            <td>PVP Kills:</td>
+            <td><?php echo $this->get('pvp'); ?></td>
+            <td><input type="checkbox" name="convert[pvp]" id="convert_pvp" checked="checked"></td>
+        </tr>
+        <tr>
+            <td>PVE Kills:</td>
+            <td><?php echo $this->get('pve'); ?></td>
+            <td><input type="checkbox" name="convert[pve]" id="convert_pve" checked="checked"></td>
+        </tr>
     </table>
     <input type="hidden" name="start" value="true">
     <?php endif; ?>
     <?php if($this->get('state') == 3): ?>
     <p>Converting... Please be patient.</p>
-    <p>Current state: <?php echo $this->get('current_state') ?></p>    
+
+    <p>Current state: <?php echo $this->get('current_state') ?></p>
     <?php endif; ?>
 </fieldset>
 <?php if($this->get('state') != 3): ?>

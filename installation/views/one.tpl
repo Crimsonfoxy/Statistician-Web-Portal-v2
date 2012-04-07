@@ -1,8 +1,8 @@
 <fieldset name="language">
     <legend>Language</legend>
     <select name="lang">
-	<option value="en" selected="selected">English</option>
-	<option value="de">German</option>
+        <option value="en" selected="selected">English</option>
+        <option value="de">German</option>
     </select>
 </fieldset>
 <br>

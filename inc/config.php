@@ -5,7 +5,7 @@
  */
 if(!extension_loaded('xdebug')) {
     fCore::enableErrorHandling('html');
-    fCore::enableExceptionHandling('html');    
+    fCore::enableExceptionHandling('html');
 }
 
 fSession::open();
@@ -21,13 +21,14 @@ fText::registerComposeCallback('pre', array($lang, 'translate'));
  * Initializes ORM
  */
 if(defined('DB_TYPE')) {
-    if(DB_TYPE != 'sqlite') $db = new fDatabase(DB_TYPE, DB_DATABASE, DB_USER, DB_PW, DB_HOST);
-    else $db = new fDatabase('sqlite', DB_HOST);    
+    if(DB_TYPE != 'sqlite')
+        $db = new fDatabase(DB_TYPE, DB_DATABASE, DB_USER, DB_PW, DB_HOST);
+    else $db = new fDatabase('sqlite', DB_HOST);
     fORMDatabase::attach($db);
-    
+
     // adds prefix
     $db->registerHookCallback('unmodified', 'add_prefix');
-    
+
     // map classes to tables with prefix!
     fORM::mapClassToTable('Player', DB_PREFIX . 'player');
     fORM::mapClassToTable('Creature', DB_PREFIX . 'creature');
@@ -37,18 +38,21 @@ if(defined('DB_TYPE')) {
 
 /**
  * Automatically includes classes
- * 
+ *
  * @throws Exception
- * 
+ *
  * @param  string $class_name  Name of the class to load
+ *
  * @return void
  */
-function __autoload($class_name) {    
-    $flourish_file = __INC__ . 'flourish/' . $class_name . '.php'; 
-    if (file_exists($flourish_file)) return require $flourish_file;
-    
-    $file = __INC__ . 'classes/' . $class_name . '.php';    
-    if(file_exists($file)) return require $file;
-    
+function __autoload($class_name) {
+    $flourish_file = __INC__ . 'flourish/' . $class_name . '.php';
+    if(file_exists($flourish_file))
+        return require $flourish_file;
+
+    $file = __INC__ . 'classes/' . $class_name . '.php';
+    if(file_exists($file))
+        return require $file;
+
     throw new fEnvironmentException('The class ' . $class_name . ' could not be loaded');
 }

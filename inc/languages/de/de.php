@@ -1,9 +1,9 @@
 <?php
 $translations = array(
     'submit' => 'Absenden',
-    'db' => 'Datenbank',
+    'db'     => 'Datenbank',
     'server' => 'Server',
-    'user' => 'Benutzer',
-    'pw' => 'Passwort',
+    'user'   => 'Benutzer',
+    'pw'     => 'Passwort',
     'prefix' => 'Prefix'
 );

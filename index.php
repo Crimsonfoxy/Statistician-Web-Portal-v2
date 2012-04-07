@@ -1,7 +1,8 @@
 <?php
 include_once 'inc/init.php';
 
-if(file_exists('install.php')) fURL::redirect ('install.php');
+if(file_exists('install.php'))
+    fURL::redirect('install.php');
 
 /*
  * Gets the requested page and checks if the page exists or not
@@ -9,7 +10,8 @@ if(file_exists('install.php')) fURL::redirect ('install.php');
 $content = fRequest::get('page', NULL, 'overview');
 $content .= '.php';
 
-if(!file_exists(__ROOT__ . 'contents/default/' . $content)) $content = 'error.php';
+if(!file_exists(__ROOT__ . 'contents/default/' . $content))
+    $content = 'error.php';
 
 $design = new fTemplating(__ROOT__ . 'contents/default', './templates/default/index.php');
 $design->registerExtension('php', 'tpl');
