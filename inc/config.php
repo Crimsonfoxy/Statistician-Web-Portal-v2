@@ -8,6 +8,7 @@ if(!extension_loaded('xdebug')) {
     fCore::enableExceptionHandling('html');
 }
 
+fSession::setLength('1day');
 fSession::open();
 
 /*

@@ -1,4 +1,4 @@
-<fieldset name="language">
+<fieldset>
     <legend>Language</legend>
     <select name="lang">
         <option value="en" selected="selected">English</option>

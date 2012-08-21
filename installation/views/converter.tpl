@@ -19,45 +19,38 @@ fMessaging::show('*', 'install/converter');
     <?php endif; ?>
 
     <?php if($this->get('state') == 2): ?>
-    <p>This could last a long time! Go and take or coffee or finish your dinner ;)</p>
+    <p>This could last a long time! Go and drink an coffee or finish your dinner ;)</p>
+    <p>Do not reload the page even if your browser will take ages for the next page...</p>
 
     <p>Choose which entries do you want to convert:</p>
     <table>
         <tr>
             <td>Players:</td>
-            <td><?php echo $this->get('players'); ?></td>
+            <td><label for="convert_players"><?php echo $this->get('players'); ?></label></td>
             <td><input type="checkbox" name="convert[players]" id="convert_players" disabled="disabled"
-                       checked="checked"></td>
+                       checked="checked">
+            </td>
+            <!-- TODO add options to choose which players should be converted e.g. number of logins, last login time -->
         </tr>
         <tr>
-            <td>Blocks placed:</td>
-            <td><?php echo $this->get('blocks_placed'); ?></td>
-            <td><input type="checkbox" name="convert[blocks_placed]" id="convert_placed_blocks" checked="checked"></td>
-        </tr>
-        <tr>
-            <td>Blocks destroyed:</td>
-            <td><?php echo $this->get('blocks_destroyed'); ?></td>
-            <td><input type="checkbox" name="convert[blocks_destroyed]" id="convert_des_blocks" checked="checked"></td>
-        </tr>
-        <tr>
-            <td>Items dropped:</td>
-            <td><?php echo $this->get('items_dropped'); ?></td>
-            <td><input type="checkbox" name="convert[items_dropped]" id="convert_dropped_items" checked="checked"></td>
-        </tr>
-        <tr>
-            <td>Items picked up:</td>
-            <td><?php echo $this->get('items_picked'); ?></td>
-            <td><input type="checkbox" name="convert[items_picked]" id="convert_picked_items" checked="checked"></td>
-        </tr>
-        <tr>
-            <td>PVP Kills:</td>
-            <td><?php echo $this->get('pvp'); ?></td>
+            <td>Player vs. Player Kills:</td>
+            <td><label for="convert_pvp"><?php echo $this->get('pvp'); ?></label></td>
             <td><input type="checkbox" name="convert[pvp]" id="convert_pvp" checked="checked"></td>
         </tr>
         <tr>
-            <td>PVE Kills:</td>
-            <td><?php echo $this->get('pve'); ?></td>
+            <td>Player vs. Environment Kills:</td>
+            <td><label for="convert_pve"><?php echo $this->get('pve'); ?></label></td>
             <td><input type="checkbox" name="convert[pve]" id="convert_pve" checked="checked"></td>
+        </tr>
+        <tr>
+            <td>Environment vs. Player Kills:</td>
+            <td><label for="convert_evp"><?php echo $this->get('evp'); ?></label></td>
+            <td><input type="checkbox" name="convert[evp]" id="convert_evp" checked="checked"></td>
+        </tr>
+        <tr>
+            <td>Death Causes:</td>
+            <td><label for="convert_deaths"><?php echo $this->get('deaths'); ?></label></td>
+            <td><input type="checkbox" name="convert[deaths]" id="convert_deaths" checked="checked"></td>
         </tr>
     </table>
     <input type="hidden" name="start" value="true">

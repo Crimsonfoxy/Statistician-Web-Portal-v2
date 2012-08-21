@@ -29,7 +29,7 @@ function writeDB($file) {
 $tpl = new fTemplating($this->get('tplRoot'), 'four.tpl');
 $this->set('tpl', $tpl);
 
-if(!fMessaging::check('errors') && fRequest::isPost() && fRequest::get('convert_submit')) {
+if(!fMessaging::check('*') && fRequest::isPost() && fRequest::get('convert_submit')) {
     fSession::set('maxStep', 5);
     if(fRequest::get('old_data', 'boolean'))
         fURL::redirect('?step=converter');
@@ -48,18 +48,18 @@ if(!fMessaging::check('errors') && fRequest::isPost() && fRequest::get('convert_
     // writing db
     try {
         $db = fORMDatabase::retrieve();
-        // writing global db structure
-        writeDB('install.sql');
+        // check if the plugin has already written the DB
+        try{
+            $db->translatedQuery('SELECT * FROM "prefix_settings');
+        } catch(fSQLException $e) {
+            // writing global db structure
+            writeDB('install.sql');
+        }
 
         // writing general settings
         $sql = $db->translatedPrepare('INSERT INTO "prefix_settings" (`key`, `value`) VALUES(%s, %s)');
         $db->execute($sql, 'adminpw', fSession::get('general_settings[adminpw]'));
         $db->execute($sql, 'title', fSession::get('general_settings[title]'));
-
-        // writing blocks
-        writeDB('blocks.sql');
-        // writing items
-        writeDB('items.sql');
 
         $tpl->set('database', 'database written');
     } catch(fConnectivityException $e) {

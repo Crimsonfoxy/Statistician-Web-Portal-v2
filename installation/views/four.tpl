@@ -11,7 +11,7 @@ fMessaging::show('*', 'install/four');
 <br>
 <?php echo $this->get('database'); ?>
 
-<fieldset name="convert">
+<fieldset>
     <legend>Old Data</legend>
     <p>Do you have an older installation of statistician and want to transfer the statistics?</p>
     <label for="old_data_y">Yes: </label><input type="radio" name="old_data" id="old_data_y" value="yes"

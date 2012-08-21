@@ -5,7 +5,7 @@
 fMessaging::show('*', 'install/three');
 ?>
 
-<fieldset name="general">
+<fieldset>
     <legend>General Settings</legend>
     <label for="adminpw"><?php echo fText::compose('Admin Password'); ?>:</label>
     <input type="text" name="adminpw" id="adminpw" value="<?php echo $this->get('adminpw'); ?>"><br>
